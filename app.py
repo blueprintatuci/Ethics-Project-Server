@@ -13,6 +13,7 @@ def fetch_blog_posts():
     cur = conn.cursor()
     cur.execute("select * from blog_post;")
     print(cur.fetchone())
+    return cur.fetchone() 
 
 
 if __name__ == '__main__':
