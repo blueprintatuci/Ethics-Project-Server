@@ -12,8 +12,8 @@ def fetch_blog_posts():
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
     cur.execute("select * from blog_post;")
-    print(cur.fetchone())
-    return str(cur.fetchone())
+    posts = cur.fetchall()
+    return str(posts)
 
 
 if __name__ == '__main__':
