@@ -39,9 +39,10 @@ def post_articles():
     get_stmt = ("SELECT url, title, author FROM blog_post "
                 "WHERE id = (%s)")
     cur.execute(get_stmt,(1,))
-    data = cur.fetchall()
-    # r = requests.post(ARTICLE_URL(blog_id),json={'article':data})
-    return str(data)
+    data = cur.fetchall()[0]
+    json = {'title':data[1],'body_html':data[0],'author':data[2]}
+    r = requests.post(ARTICLE_URL(blog_id),json={'article':json})
+    return jsonify({"Results":"True"}), 201
 
 if __name__ == '__main__':
     app.run()
