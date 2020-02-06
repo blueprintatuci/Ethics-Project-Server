@@ -1,10 +1,12 @@
-from keys import Keys
+# from keys import Keys
+import os
 
 class API:
 
-    API_KEY = Keys.API_KEY
-    PASSWORD = Keys.PASSWORD
-    SHARED_SECRET = Keys.SHARED_SECRET
+    # API_KEY = Keys.API_KEY
+    # PASSWORD = Keys.PASSWORD
+    API_KEY = os.getenv('MY_API_KEY')
+    SHARED_SECRET = os.getenv('API_PASSWORD')
     API_VERSION = "2020-01"
     STORE_NAME = "ethic-blueprint"
 
