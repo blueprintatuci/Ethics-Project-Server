@@ -8,7 +8,7 @@ class API:
     API_KEY = os.getenv('MY_API_KEY')
     PASSWORD = os.getenv('API_PASSWORD')
 
-    SHARED_SECRET = Keys.SHARED_SECRET
+    # SHARED_SECRET = Keys.SHARED_SECRET
     API_VERSION = "2020-01"
     STORE_NAME = "ethic-blueprint"
 
