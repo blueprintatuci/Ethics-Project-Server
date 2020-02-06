@@ -25,6 +25,13 @@ def add_blog_post():
     posts = cur.fetchall()
     return str(posts)
 
+@app.route("/shopify/articles/", methods=['POST'])
+def post_articles():
+    # error handling
+    # blog_id, data = 
+    # r = requests.post(ARTICLE_URL(blog_id),json={'article':data})
+    return "test"
+
 
 if __name__ == '__main__':
     app.run()
