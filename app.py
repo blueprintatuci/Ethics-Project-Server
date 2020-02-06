@@ -42,7 +42,7 @@ def post_articles():
     cur.execute(get_stmt,(1,))
     data = cur.fetchall()[0]
     json = {'title':data[1],'body_html':data[0],'author':data[2]}
-    r = requests.post(API.ARTICLE_URL(blog_id),json={'article':json})
+    r = requests.post(API.ARTICLE_URL(API.ADMIN_URL,blog_id),json={'article':json})
     return jsonify({"Results":"True"}), 201
 
 if __name__ == '__main__':
