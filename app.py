@@ -45,7 +45,7 @@ def add_article():
     if data is None:
         return jsonify({"error": "Did not provide POST body"}), 400
     query = "INSERT INTO articles (url, title, author, image_url, content, publish_date, times_used) VALUES(%s, %s, %s, %s, %s, %s, %s)"
-    values = (data["url"], data["title"], data["author"], data["image_url"], data["excerpt"], data["date"], "0")
+    values = (data["url"], data["title"], data["author"], data["image_url"], data["content"], data["date"], "0")
     cur.execute(query, values)
     conn.commit()
 
