@@ -89,7 +89,7 @@ def post_articles():
 
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
-    get_stmt = ("SELECT url, title, author, image_url FROM articles "
+    get_stmt = ("SELECT url, title, author, image_url, content FROM articles "
                 "WHERE id = (%s)")
     cur.execute(get_stmt,(request.json['json']['id'],))
     data = cur.fetchall()
@@ -98,9 +98,12 @@ def post_articles():
         abort(404)
     
     img_src = {"src":data[0][3]}
-    json = {'title':data[0][1],'body_html':'URL:'+ data[0][0],'author':data[0][2],'image':img_src}
+    json = {'title':data[0][1],
+            'body_html':data[0][4] + '\n\nURL: '+ data[0][0],
+            'author':data[0][2],
+            'image':{'src':data[0][3]}}
     r = requests.post(API.ARTICLE_URL(API.ADMIN_URL,blog_id),json={'article':json})
-    curr.close()
+    cur.close()
     conn.close()
 
     if r.status_code == 201:
