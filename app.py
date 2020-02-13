@@ -15,6 +15,10 @@ def hello():
 
 @app.route('/articles')
 def fetch_articles():
+    """
+    GET request
+    Returns all articles in our database
+    """
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
     cur.execute("select * from articles;")
@@ -38,6 +42,17 @@ def fetch_articles():
 
 @app.route('/add_article', methods=['POST'])
 def add_article():
+    """
+    POST request
+    Adds a single article to our database
+    POST body params:
+        url - link to the article (str)
+        title - title of the article (str)
+        author - name of the author (str)
+        content - excerpt or content of the article (str)
+        date - date that the article was published (str in MM/DD/YYYY format)
+    times_used will be filled on this server's end (initial value: 0)
+    """
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
     data = request.get_json()
@@ -45,7 +60,7 @@ def add_article():
     if data is None:
         return jsonify({"error": "Did not provide POST body"}), 400
     query = "INSERT INTO articles (url, title, author, image_url, content, publish_date, times_used) VALUES(%s, %s, %s, %s, %s, %s, %s)"
-    values = (data["url"], data["title"], data["author"], data["image_url"], data["content"], data["date"], "0")
+    values = (data["url"], data["title"], data["author"], data["image_url"], data["content"], data["publish_date"], "0")
     cur.execute(query, values)
     conn.commit()
 
