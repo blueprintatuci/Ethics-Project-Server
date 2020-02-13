@@ -97,9 +97,12 @@ def post_articles():
     if not data: # if id not found
         abort(404)
     
-    img_src = {"src":data[0][3]}
+    if not data[0][4]:
+        content = '\n\nURL: '+ data[0][0]
+    else:
+        content = data[0][4] + '\n\nURL: '+ data[0][0]
     json = {'title':data[0][1],
-            'body_html':data[0][4] + '\n\nURL: '+ data[0][0],
+            'body_html':content,
             'author':data[0][2],
             'image':{'src':data[0][3]}}
     r = requests.post(API.ARTICLE_URL(API.ADMIN_URL,blog_id),json={'article':json})
