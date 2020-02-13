@@ -32,7 +32,7 @@ def add_blog_post():
 @app.route("/shopify/articles", methods=['POST'])
 def post_articles():
     # error handling
-    blog_id = "54691004553"
+    blog_id = "54254043195"
 
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
