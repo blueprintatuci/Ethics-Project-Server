@@ -31,17 +31,27 @@ def fetch_articles():
             json_article[col_names[i]] = article[i]
         json_articles.append(json_article)
     
-    print(json_articles)
+    cur.close()
+    conn.close()
 
     return jsonify({"articles": json_articles}), 200
 
-@app.route('/add_article')
+@app.route('/add_article', methods=['POST'])
 def add_article():
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
-    cur.execute("select * from blog_post;")
-    posts = cur.fetchall()
-    return str(posts)
+    data = request.get_json()
+    print(data)
+    if data is None:
+        return jsonify({"error": "Did not provide POST body"}), 400
+    query = "INSERT INTO articles (url, title, author, image_url, content, publish_date, times_used) VALUES(%s, %s, %s, %s, %s, %s, %s)"
+    values = (data["url"], data["title"], data["author"], data["image_url"], data["excerpt"], data["date"], "0")
+    cur.execute(query, values)
+    conn.commit()
+
+    cur.close()
+    conn.close()
+    return jsonify({"inserted": "success"}), 200
 
 @app.route("/shopify/articles", methods=['POST'])
 def post_articles():
@@ -51,7 +61,7 @@ def post_articles():
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
 
-    get_stmt = ("SELECT url, title, author FROM blog_post "
+    get_stmt = ("SELECT url, title, author FROM articles "
                 "WHERE id = (%s)")
     cur.execute(get_stmt,(1,))
     data = cur.fetchall()[0]
