@@ -43,7 +43,7 @@ def post_articles():
     data = cur.fetchall()[0]
     json = {'title':data[1],'body_html':data[0],'author':data[2]}
     r = requests.post(API.ARTICLE_URL(API.ADMIN_URL,blog_id),json={'article':json})
-    return jsonify({"Results":"True"}), 201
+    return jsonify({"Message":r.text}), r.status_code
 
 if __name__ == '__main__':
     app.run()
