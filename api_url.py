@@ -5,10 +5,11 @@ class API:
 
     # API_KEY = Keys.API_KEY
     # PASSWORD = Keys.PASSWORD
+    # STORE_NAME = "ethic-bp"
     API_KEY = os.getenv('MY_API_KEY')
     PASSWORD = os.getenv('API_PASSWORD')
+    STORE_NAME = os.getenv('STORE_NAME')
     API_VERSION = "2020-01"
-    STORE_NAME = "ethic-blueprint"
 
     ADMIN_URL = f"https://{API_KEY}:{PASSWORD}@{STORE_NAME}.myshopify.com/admin/api/{API_VERSION}"
 
