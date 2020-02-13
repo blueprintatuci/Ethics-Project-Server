@@ -70,21 +70,27 @@ def add_article():
 
 @app.route("/shopify/articles", methods=['POST'])
 def post_articles():
-    print(request.json)
-    print(request.json['id'])
     # error handling
-    blog_id = "54254043195"
+    blog_id = "54254043195" # should be a parameter in future
 
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
 
     get_stmt = ("SELECT url, title, author FROM articles "
                 "WHERE id = (%s)")
-    cur.execute(get_stmt,(16,))
+    cur.execute(get_stmt,(request.json['json']['id'],))
     data = cur.fetchall()[0]
+
     json = {'title':data[1],'body_html':data[0],'author':data[2]}
     r = requests.post(API.ARTICLE_URL(API.ADMIN_URL,blog_id),json={'article':json})
-    return jsonify({"Message":r.text}), r.status_code
+
+    if r.status_code == 201:
+        return r.json(), r.status_code
+    else:
+        return jsonfiy({"Message":r.text}), r.status_code
+
+    curr.close()
+    conn.close()
 
 if __name__ == '__main__':
     app.run()
