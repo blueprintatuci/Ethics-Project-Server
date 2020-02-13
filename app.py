@@ -13,16 +13,30 @@ DATABASE_URL = "postgres://rdrhinxhcqfrkm:989d6c91e8eb163284de44343083d0c4928b4d
 def hello():
     return "Hello World!"
 
-@app.route('/blog_posts')
-def fetch_blog_posts():
+@app.route('/articles')
+def fetch_articles():
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
-    cur.execute("select * from blog_post;")
-    posts = cur.fetchall()
-    return str(posts)
+    cur.execute("select * from articles;")
+    articles = cur.fetchall()
+    col_names = []
+    for col in cur.description:
+        col_names.append(col[0])
+    
+    json_articles = []
 
-@app.route('/add_post')
-def add_blog_post():
+    for article in articles:
+        json_article = dict()
+        for i in range(len(col_names)):
+            json_article[col_names[i]] = article[i]
+        json_articles.append(json_article)
+    
+    print(json_articles)
+
+    return jsonify({"articles": json_articles}), 200
+
+@app.route('/add_article')
+def add_article():
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
     cur.execute("select * from blog_post;")
