@@ -14,9 +14,9 @@ class API:
 
     BLOG_URL = ADMIN_URL+"/blogs.json"
 
-    ARTICLE_URL = lambda ADMIN_URL, blog_id: f"{ADMIN_URL}/blogs/#{blog_id}/articles.json"
-    ARTICLE_URL_count = lambda blog_id: f"{ADMIN_URL}/blogs/#{blog_id}/articles/count.json"
-    ARTICLE_URL_get_single = lambda blog_id, article_id: f"{ADMIN_URL}/blogs/{blog_id}/articles/#{article_id}.json"
+    ARTICLE_URL = lambda ADMIN_URL, blog_id: f"{ADMIN_URL}/blogs/{blog_id}/articles.json"
+    ARTICLE_URL_count = lambda blog_id: f"{ADMIN_URL}/blogs/{blog_id}/articles/count.json"
+    ARTICLE_URL_get_single = lambda blog_id, article_id: f"{ADMIN_URL}/blogs/{blog_id}/articles/{article_id}.json"
 
 if __name__ == "__main__":
     print(API.BLOG_URL)
