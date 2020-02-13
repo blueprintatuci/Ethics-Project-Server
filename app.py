@@ -9,6 +9,14 @@ app = Flask(__name__)
 CORS(app)
 DATABASE_URL = "postgres://rdrhinxhcqfrkm:989d6c91e8eb163284de44343083d0c4928b4d539e493bb8dffbe16ce29e994d@ec2-52-203-98-126.compute-1.amazonaws.com:5432/d8u52i7luh8cuv?sslmode=require"
 
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
+@app.errorhandler(400)
+def bad_request(error):
+    return jsonify({"error": "Did not provide valid POST body"}), 400
+
 @app.route('/')
 def hello():
     return "Hello World!"
@@ -70,27 +78,38 @@ def add_article():
 
 @app.route("/shopify/articles", methods=['POST'])
 def post_articles():
-    # error handling
+    """
+    POST request
+    Posts a single article to Shopify blog
+    POST body params:
+        json - contains all data
+            id - id of article in database (int)
+    """
     blog_id = "54254043195" # should be a parameter in future
 
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
-
-    get_stmt = ("SELECT url, title, author FROM articles "
+    get_stmt = ("SELECT url, title, author, image_url FROM articles "
                 "WHERE id = (%s)")
     cur.execute(get_stmt,(request.json['json']['id'],))
-    data = cur.fetchall()[0]
+    data = cur.fetchall()
 
-    json = {'title':data[1],'body_html':data[0],'author':data[2]}
+    if not data: # if id not found
+        abort(404)
+    
+    img_src = {"src":data[0][3]}
+    json = {'title':data[0][1],'body_html':'URL:'+ data[0][0],'author':data[0][2],'image':img_src}
     r = requests.post(API.ARTICLE_URL(API.ADMIN_URL,blog_id),json={'article':json})
+    curr.close()
+    conn.close()
 
     if r.status_code == 201:
         return r.json(), r.status_code
     else:
-        return jsonfiy({"Message":r.text}), r.status_code
-
-    curr.close()
-    conn.close()
+        return jsonify({"Message":r.text}), r.status_code
 
 if __name__ == '__main__':
     app.run()
+
+
+
