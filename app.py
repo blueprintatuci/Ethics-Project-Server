@@ -105,7 +105,7 @@ def post_articles():
             id - id of article in database (int)
             
     """
-    blog_id = "54254043195" # should be a parameter in future
+    blog_id = "55978655788" # should be a parameter in future
 
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
