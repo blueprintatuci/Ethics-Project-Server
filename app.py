@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import psycopg2
 import requests
@@ -103,6 +103,7 @@ def post_articles():
     POST body params:
         json - contains all data
             id - id of article in database (int)
+            
     """
     blog_id = "54254043195" # should be a parameter in future
 
