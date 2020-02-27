@@ -48,6 +48,25 @@ def fetch_articles():
 
     return jsonify({"articles": json_articles}), 200
 
+@app.route('/blogs', methods=['GET'])
+def get_blogs():
+    """
+    GET request
+    gets all blogs from shopify and returns parsed json
+    return json format --> {"store_name":id}
+    """
+    blogs_r = requests.get(API.BLOG_URL)
+    if blogs_r.status_code != 200:
+        return blogs_r.json(), blogs_r.status_code
+
+    blogs_json = blogs_r.json()
+    json = dict()
+    for blog in blogs_json["blogs"]:
+        json[blog["title"]] = blog["id"]
+
+    return jsonify(json), 200
+
+
 @app.route('/add_article', methods=['POST'])
 def add_article():
     """
@@ -91,7 +110,8 @@ def post_articles():
     cur = conn.cursor()
     get_stmt = ("SELECT url, title, author, image_url, content FROM articles "
                 "WHERE id = (%s)")
-    cur.execute(get_stmt,(request.json['json']['id'],))
+    values = (request.json['json']['id'],)
+    cur.execute(get_stmt, values)
     data = cur.fetchall()
 
     if not data: # if id not found
