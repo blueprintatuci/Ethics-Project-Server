@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import psycopg2
 import requests
@@ -8,6 +8,14 @@ from api_url import API
 app = Flask(__name__)
 CORS(app)
 DATABASE_URL = "postgres://rdrhinxhcqfrkm:989d6c91e8eb163284de44343083d0c4928b4d539e493bb8dffbe16ce29e994d@ec2-52-203-98-126.compute-1.amazonaws.com:5432/d8u52i7luh8cuv?sslmode=require"
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
+@app.errorhandler(400)
+def bad_request(error):
+    return jsonify({"error": "Did not provide valid POST body"}), 400
 
 @app.route('/')
 def hello():
@@ -41,6 +49,25 @@ def fetch_articles():
 
     return jsonify({"articles": json_articles}), 200
 
+@app.route('/blogs', methods=['GET'])
+def get_blogs():
+    """
+    GET request
+    gets all blogs from shopify and returns parsed json
+    return json format --> {"store_name":id}
+    """
+    blogs_r = requests.get(API.BLOG_URL)
+    if blogs_r.status_code != 200:
+        return blogs_r.json(), blogs_r.status_code
+
+    blogs_json = blogs_r.json()
+    json = dict()
+    for blog in blogs_json["blogs"]:
+        json[blog["title"]] = blog["id"]
+
+    return jsonify(json), 200
+
+
 @app.route('/add_article', methods=['POST'])
 def add_article():
     """
@@ -71,19 +98,46 @@ def add_article():
 
 @app.route("/shopify/articles", methods=['POST'])
 def post_articles():
-    # error handling
-    blog_id = "54254043195"
+    """
+    POST request
+    Posts a single article to Shopify blog
+    POST body params:
+        json - contains all data
+            id - id of article in database (int)
+            
+    """
+    blog_id = "55978655788" # should be a parameter in future
 
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
-
-    get_stmt = ("SELECT url, title, author FROM articles "
+    get_stmt = ("SELECT url, title, author, image_url, content FROM articles "
                 "WHERE id = (%s)")
-    cur.execute(get_stmt,(1,))
-    data = cur.fetchall()[0]
-    json = {'title':data[1],'body_html':data[0],'author':data[2]}
+    values = (request.json['json']['id'],)
+    cur.execute(get_stmt, values)
+    data = cur.fetchall()
+
+    if not data: # if id not found
+        abort(404)
+    
+    if not data[0][4]:
+        content = '\n\nURL: '+ data[0][0]
+    else:
+        content = data[0][4] + '\n\nURL: '+ data[0][0]
+    json = {'title':data[0][1],
+            'body_html':content,
+            'author':data[0][2],
+            'image':{'src':data[0][3]}}
     r = requests.post(API.ARTICLE_URL(API.ADMIN_URL,blog_id),json={'article':json})
-    return jsonify({"Message":r.text}), r.status_code
+    cur.close()
+    conn.close()
+
+    if r.status_code == 201:
+        return r.json(), r.status_code
+    else:
+        return jsonify({"Message":r.text}), r.status_code
 
 if __name__ == '__main__':
     app.run()
+
+
+
