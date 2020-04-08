@@ -17,11 +17,12 @@ def hello():
 def fetch_articles():
     """
     GET request
-    Returns all articles in our database
+    Returns all articles in our database, sorted from most recent publish date
+    to least recent
     """
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
-    cur.execute("select * from articles;")
+    cur.execute("select * from articles order by publish_date desc;")
     articles = cur.fetchall()
     col_names = []
     for col in cur.description:
