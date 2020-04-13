@@ -77,7 +77,7 @@ def add_article():
         url - link to the article (str)
         title - title of the article (str)
         author - name of the author (str)
-        content - excerpt or content of the article (str)
+        image_url - (str)
         date - date that the article was published (str in MM/DD/YYYY format)
     times_used will be filled on this server's end (initial value: 0)
     """
@@ -87,8 +87,8 @@ def add_article():
     print(data)
     if data is None:
         return jsonify({"error": "Did not provide POST body"}), 400
-    query = "INSERT INTO articles (url, title, author, image_url, content, publish_date, times_used) VALUES(%s, %s, %s, %s, %s, %s, %s)"
-    values = (data["url"], data["title"], data["author"], data["image_url"], data["content"], data["publish_date"], "0")
+    query = "INSERT INTO articles_new (url, title, author, image_url, publish_date) VALUES(%s, %s, %s, %s, %s)"
+    values = (data["url"], data["title"], data["author"], data["image_url"], data["publish_date"])
     cur.execute(query, values)
     conn.commit()
 
