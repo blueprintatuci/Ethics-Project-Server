@@ -103,16 +103,17 @@ def post_articles():
     Posts a single article to Shopify blog
     POST body params:
         json - contains all data
-            id - id of article in database (int)
+            article_id - id of article in database (int)
+            blog_id - id of blog to post to (int)
             
     """
-    blog_id = "55978655788" # should be a parameter in future
+    blog_id = str(request.json['json']['blog_id'])
 
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
     get_stmt = ("SELECT url, title, author, image_url, content FROM articles "
                 "WHERE id = (%s)")
-    values = (request.json['json']['id'],)
+    values = (request.json['json']['article_id'],)
     cur.execute(get_stmt, values)
     data = cur.fetchall()
 
