@@ -4,7 +4,7 @@ import requests
 ## for treehugger.com
 ## does not include featured article
 
-def scrape():
+def treehugger():
     l = []
     
        
@@ -42,7 +42,7 @@ def scrape():
         d['publish_date'] = publish_date
 
         # 'source': self.name,
-
+        d['source'] = 'treehugger'
 
         l.append(d)
 
@@ -50,4 +50,4 @@ def scrape():
 
 
 if __name__ == "__main__":
-    print(scrape())
+    print(treehugger())
