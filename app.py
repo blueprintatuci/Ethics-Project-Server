@@ -100,20 +100,22 @@ def add_article():
 def post_articles():
     """
     POST request
-    Posts a single article to Shopify blog
+    Posts a single article to Shopify blog, and inserts the article
+    into the articles_in_blogs table
     POST body params:
         json - contains all data
             article_id - id of article in database (int)
             blog_id - id of blog to post to (int)
             
     """
-    blog_id = str(request.json['json']['blog_id'])
+    blog_id = str(request.json['blog_id'])
+    article_id = request.json['article_id']
 
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
-    get_stmt = ("SELECT url, title, author, image_url, content FROM articles "
+    get_stmt = ("SELECT url, title, author, image_url FROM articles "
                 "WHERE id = (%s)")
-    values = (request.json['json']['article_id'],)
+    values = (article_id,)
     cur.execute(get_stmt, values)
     data = cur.fetchall()
 
@@ -129,6 +131,12 @@ def post_articles():
             'author':data[0][2],
             'image':{'src':data[0][3]}}
     r = requests.post(API.ARTICLE_URL(API.ADMIN_URL,blog_id),json={'article':json})
+
+    query = "INSERT INTO articles_in_blog (article_id, blog_id) VALUES(%s, %s)"
+    values = (article_id, blog_id)
+    cur.execute(query, values)
+    conn.commit()
+
     cur.close()
     conn.close()
 
