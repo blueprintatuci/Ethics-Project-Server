@@ -137,6 +137,14 @@ def post_articles():
     else:
         return jsonify({"Message":r.text}), r.status_code
 
+@app.route("/scrape_articles", methods=['GET'])
+def scrape_articles():
+    """
+    GET request
+    Endpoint to call scraper code (frontend will refresh page after the call is complete)
+    """
+    return "200 OK"
+
 if __name__ == '__main__':
     app.run()
 
