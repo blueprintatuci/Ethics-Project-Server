@@ -28,6 +28,9 @@ def date_convert(string):
 
 
 def scrape_treehugger():
+    '''
+    Scrapes latest stories from treehugger
+    '''
     l = []
     
     base_url = 'https://www.treehugger.com/' 

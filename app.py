@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import psycopg2
 import requests
-import treehugger
+import scraper_script as Scrapers
 
 from api_url import API
 
@@ -146,14 +146,14 @@ def scrape_articles():
     """
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
-    data = treehugger()
+    data = Scrapers.run_scrapers()
 
-    print(data)
+    # print(data)
     if len(data) == 0 :
         return jsonify({"error": "Did not provide POST body"}), 400
     for item in data:
         query = "INSERT INTO test_articles (url, title, author, image_url, publish_date) VALUES(%s, %s, %s, %s, %s)"
-        values = (data["url"], data["title"], data["author"], data["image_url"], data["publish_date"])
+        values = (item["url"], item["title"], item["author"], item["image_url"], item["publish_date"])
         cur.execute(query, values)
         conn.commit()
 

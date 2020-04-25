@@ -27,6 +27,9 @@ def date_convert(string):
 
 
 def scrape_zerowastehome():
+    '''
+    Scrapes content from zerowastehome
+    '''
     l = []
     
     base_url = 'https://zerowastehome.com/blog/' 
