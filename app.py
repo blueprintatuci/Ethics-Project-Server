@@ -53,17 +53,29 @@ def fetch_articles():
 def get_blogs():
     """
     GET request
-    gets all blogs from shopify and returns parsed json
+    gets all blogs from shopify, inserts them into our table, and returns parsed json
     return json format --> {"store_name":id}
     """
+    # fetch Shopify blogs
     blogs_r = requests.get(API.BLOG_URL)
     if blogs_r.status_code != 200:
         return blogs_r.json(), blogs_r.status_code
 
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cur = conn.cursor()
+
     blogs_json = blogs_r.json()
-    json = dict()
+    json = dict()    
     for blog in blogs_json["blogs"]:
         json[blog["title"]] = blog["id"]
+        # inserts the blogs into our table, and updates the names in case they are changed
+        query = "INSERT INTO blogs (id, name) VALUES(%s, %s) ON CONFLICT (id) DO UPDATE SET name = excluded.name;"
+        values = (blog["id"], blog["title"])
+        cur.execute(query, values)
+        conn.commit()
+
+    cur.close()
+    conn.close()
 
     return jsonify(json), 200
 
