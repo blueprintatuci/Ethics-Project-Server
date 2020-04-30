@@ -49,6 +49,37 @@ def fetch_articles():
 
     return jsonify({"articles": json_articles}), 200
 
+@app.route('/unused_articles/<int:blog_id>', methods=['GET'])
+def fetch_unused_articles(blog_id):
+    """
+    GET request
+    gets all unused article id's in a blog
+    URL query parameters:
+        blog_id (int): blog id of shopify blog
+    """
+
+    # if blog_id not in blog table, return 404?
+
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cur = conn.cursor()
+    query = ("(SELECT id FROM articles "
+                "ORDER BY publish_date DESC "
+                "LIMIT 80)"
+                "EXCEPT "
+                "(SELECT article_id FROM articles_in_blog "
+                "WHERE blog_id = (%s)) "
+                )
+    values = (blog_id,)
+    cur.execute(query, values)
+    data = cur.fetchall()
+
+    json = dict()
+    json['blog_id'] = blog_id
+    json['article_ids'] = [id for sublist in data for id in sublist]
+
+    return jsonify(json), 200
+
+
 @app.route('/blogs', methods=['GET'])
 def get_blogs():
     """
