@@ -247,6 +247,43 @@ def scrape_articles():
     conn.close()
     return "200 OK"
 
+@app.route('/recent_article/<string:site>', methods=['GET'])
+def recent_article(site):
+    """
+    GET request
+    gets the most recent article for a specific site
+    URL query parameters:
+        site (string): main website domain
+    """
+    if site is None:
+        return jsonify({"error": "Did not provide main site domain"}), 400
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cur = conn.cursor()
+    site = '%'+site+'%'
+    query = ("SELECT * "
+                "FROM articles "
+                "WHERE url LIKE %s "
+                "ORDER by publish_date DESC "
+                "LIMIT 1 ")
+    values = (site,)
+
+    cur.execute(query, values)
+    data = cur.fetchall()
+
+    col_names = []
+    for col in cur.description:
+        col_names.append(col[0])
+
+    json_article = dict()
+    for i in range(len(col_names)):
+        json_article[col_names[i]] = data[0][i]
+    
+    cur.close()
+    conn.close()
+    print(json_article)
+    return jsonify(json_article), 200
+
+
 if __name__ == '__main__':
     app.run()
 
