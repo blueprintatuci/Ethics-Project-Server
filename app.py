@@ -56,6 +56,12 @@ def fetch_unused_articles(blog_id):
     gets all unused article id's in a blog
     URL query parameters:
         blog_id (int): blog id of shopify blog
+    
+    Returns JSON in this format:
+    {
+        "articles": list of article objects ([{}]),
+        "blog_name": name of blog (str)
+    }
     """
 
     # if blog_id not in blog table, return 404?
@@ -74,8 +80,37 @@ def fetch_unused_articles(blog_id):
     data = cur.fetchall()
 
     json = dict()
-    json['blog_id'] = blog_id
-    json['article_ids'] = [id for sublist in data for id in sublist]
+    query = "select name from blogs where id = %s;"
+    values = (blog_id,)
+    cur.execute(query, values)
+    blog_name = cur.fetchall()
+    # updating our return JSON to have blog_name
+    json['blog_name'] = blog_name[0][0]
+
+    cur.execute("select * from articles order by publish_date desc;")
+    articles = cur.fetchall()
+    col_names = []
+    for col in cur.description:
+        col_names.append(col[0])
+
+    # Fetching the article data in the articles_id list
+    article_ids = [id for sublist in data for id in sublist]
+    articles = []
+    for article_id in article_ids:
+        query = "SELECT * from articles where id = %s"
+        values = (article_id,)
+        cur.execute(query, values)
+        data = cur.fetchall()
+        article = dict()
+        for i in range(len(col_names)):
+            article[col_names[i]] = data[0][i]
+        articles.append(article)
+
+    # adding the articles list to our returned JSON
+    json['articles'] = articles
+
+    cur.close()
+    conn.close()
 
     return jsonify(json), 200
 
