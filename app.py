@@ -280,7 +280,6 @@ def recent_article(site):
     
     cur.close()
     conn.close()
-    print(json_article)
     return jsonify(json_article), 200
 
 
