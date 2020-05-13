@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
-from utils import * 
+from scrapers.utils import * 
 
 ## for treehugger.com
 ## does not include featured article, can include all articles once duplicate catcher is in place?
