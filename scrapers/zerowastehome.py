@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
-from utils import *
+from scrapers.utils import *
 
 ## for zerowastehome.com
 
