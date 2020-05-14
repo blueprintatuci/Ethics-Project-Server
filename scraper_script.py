@@ -1,5 +1,6 @@
 import scrapers.treehugger as treehugger
 import scrapers.zerowastehome as zerowastehome
+import datetime
 
 def run_scrapers(recent_articles):
     '''
@@ -13,4 +14,18 @@ def run_scrapers(recent_articles):
     return th + zwh
 
 if __name__ == "__main__":
-    print(run_scrapers())
+    test_article = {
+                'url': "",
+                'title':"",
+                'author':"",
+                'image_url':"",
+                'publish_date' : datetime.datetime(1,1,1),
+            }
+    rec_art = {
+        'treehugger': test_article,
+        'zerowastehome': test_article,
+    }
+    rs = run_scrapers(rec_art)
+    print('Number of articles: ', len(rs))
+    print(rs)
+    
