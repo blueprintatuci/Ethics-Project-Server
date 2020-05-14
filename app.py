@@ -121,7 +121,7 @@ def get_blogs():
     """
     GET request
     gets all blogs from shopify, inserts them into our table, and returns parsed json
-    return json format --> {"store_name":id}
+    return json format --> {id:"blog_name"}
     """
     # fetch Shopify blogs
     blogs_r = requests.get(API.BLOG_URL)
@@ -134,7 +134,7 @@ def get_blogs():
     blogs_json = blogs_r.json()
     json = dict()    
     for blog in blogs_json["blogs"]:
-        json[blog["title"]] = blog["id"]
+        json[blog["id"]] = blog["title"]
         # inserts the blogs into our table, and updates the names in case they are changed
         query = "INSERT INTO blogs (id, name) VALUES(%s, %s) ON CONFLICT (id) DO UPDATE SET name = excluded.name;"
         values = (blog["id"], blog["title"])
