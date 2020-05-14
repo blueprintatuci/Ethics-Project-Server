@@ -122,7 +122,7 @@ def get_blogs():
     """
     GET request
     gets all blogs from shopify, inserts them into our table, and returns parsed json
-    return json format --> {"store_name":id}
+    return json format --> {id:"blog_name"}
     """
     # fetch Shopify blogs
     blogs_r = requests.get(API.BLOG_URL)
@@ -135,7 +135,7 @@ def get_blogs():
     blogs_json = blogs_r.json()
     json = dict()    
     for blog in blogs_json["blogs"]:
-        json[blog["title"]] = blog["id"]
+        json[blog["id"]] = blog["title"]
         # inserts the blogs into our table, and updates the names in case they are changed
         query = "INSERT INTO blogs (id, name) VALUES(%s, %s) ON CONFLICT (id) DO UPDATE SET name = excluded.name;"
         values = (blog["id"], blog["title"])
@@ -255,7 +255,7 @@ def scrape_articles():
         if len(data) > 0:
             for i in range(len(col_names)):
                 json_article[col_names[i]] = data[0][i]
-        else:
+        else: # if table is empty
             json_article = {
                 'url': "",
                 'title':"",
@@ -271,7 +271,7 @@ def scrape_articles():
     if len(articles) == 0 :
         return jsonify({"error": "Did not provide POST body"}), 400
     for item in articles:
-        query = "INSERT INTO test_articles (url, title, author, image_url, publish_date) VALUES(%s, %s, %s, %s, %s)"
+        query = "INSERT INTO articles (url, title, author, image_url, publish_date) VALUES(%s, %s, %s, %s, %s) ON CONFLICT (url) DO NOTHING"
         values = (item["url"], item["title"], item["author"], item["image_url"], item["publish_date"])
         cur.execute(query, values)
         conn.commit()
