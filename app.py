@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import psycopg2
 import requests
+import datetime
 import scraper_script as Scrapers
 
 from api_url import API
@@ -232,13 +233,45 @@ def scrape_articles():
     """
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
-    data = Scrapers.run_scrapers()
+    all_sites = ['treehugger', 'zerowastehome']
+    recent_articles = dict()
+    for site in all_sites:
+        site_query = '%'+site+'%'
+        query = ("SELECT * "
+                    "FROM test_articles "
+                    "WHERE url LIKE %s "
+                    "ORDER by publish_date DESC "
+                    "LIMIT 1 ")
+        values = (site_query,)
 
-    # print(data)
-    if len(data) == 0 :
+        cur.execute(query, values)
+        data = cur.fetchall()
+
+        col_names = []
+        for col in cur.description:
+            col_names.append(col[0])
+
+        json_article = dict()
+        if len(data) > 0:
+            for i in range(len(col_names)):
+                json_article[col_names[i]] = data[0][i]
+        else:
+            json_article = {
+                'url': "",
+                'title':"",
+                'author':"",
+                'image_url':"",
+                'publish_date' : datetime.datetime(1,1,1),
+            }
+        recent_articles[site] = json_article
+            
+    articles = Scrapers.run_scrapers(recent_articles)
+    print ("Number of new articles: ", len(articles))
+
+    if len(articles) == 0 :
         return jsonify({"error": "Did not provide POST body"}), 400
-    for item in data:
-        query = "INSERT INTO articles (url, title, author, image_url, publish_date) VALUES(%s, %s, %s, %s, %s)"
+    for item in articles:
+        query = "INSERT INTO test_articles (url, title, author, image_url, publish_date) VALUES(%s, %s, %s, %s, %s)"
         values = (item["url"], item["title"], item["author"], item["image_url"], item["publish_date"])
         cur.execute(query, values)
         conn.commit()
