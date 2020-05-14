@@ -238,7 +238,7 @@ def scrape_articles():
     if len(data) == 0 :
         return jsonify({"error": "Did not provide POST body"}), 400
     for item in data:
-        query = "INSERT INTO articles (url, title, author, image_url, publish_date) VALUES(%s, %s, %s, %s, %s)"
+        query = "INSERT INTO articles (url, title, author, image_url, publish_date) VALUES(%s, %s, %s, %s, %s) ON CONFLICT (url) DO NOTHING"
         values = (item["url"], item["title"], item["author"], item["image_url"], item["publish_date"])
         cur.execute(query, values)
         conn.commit()
