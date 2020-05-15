@@ -201,10 +201,11 @@ def post_articles():
     if not data: # if id not found
         abort(404)
     
-    if not data[0][4]:
-        content = '\n\nURL: '+ data[0][0]
-    else:
-        content = data[0][4] + '\n\nURL: '+ data[0][0]
+    # if not data[0][4]:
+    #     content = '\n\nURL: '+ data[0][0]
+    # else:
+    #     content = data[0][4] + '\n\nURL: '+ data[0][0]
+    content = f"Read more here: {data[0][0]}"
     json = {'title':data[0][1],
             'body_html':content,
             'author':data[0][2],
