@@ -237,7 +237,7 @@ def scrape_articles():
     for site in Scrapers.all_sites:
         site_query = '%'+site+'%'
         query = ("SELECT * "
-                    "FROM test_articles "
+                    "FROM articles "
                     "WHERE url LIKE %s "
                     "ORDER by publish_date DESC "
                     "LIMIT 1 ")
@@ -271,7 +271,7 @@ def scrape_articles():
     if len(articles) == 0 :
         return jsonify({"error": "Did not provide POST body"}), 400
     for item in articles:
-        query = "INSERT INTO test_articles (url, title, author, image_url, publish_date, site_title) VALUES(%s, %s, %s, %s, %s, %s) ON CONFLICT (url) DO NOTHING"
+        query = "INSERT INTO articles (url, title, author, image_url, publish_date, site_title) VALUES(%s, %s, %s, %s, %s,%s) ON CONFLICT (url) DO NOTHING"
         values = (item["url"], item["title"], item["author"], item["image_url"], item["publish_date"], item["site_title"])
         cur.execute(query, values)
         conn.commit()
