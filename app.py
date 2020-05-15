@@ -66,10 +66,19 @@ def fetch_unused_articles(blog_id):
     }
     """
 
-    # if blog_id not in blog table, return 404?
 
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
+    query = "select * from blogs where id = %s;"
+    values = (blog_id,)
+    cur.execute(query, values)
+    blogs = cur.fetchall()
+    # if blog_id not in blog table, return 404
+    
+    if blogs == []:
+        return jsonify({"errors": "Blog with id {} does not exist".format(blog_id)}, 404)
+
+
     query = ("(SELECT id FROM articles "
                 "ORDER BY publish_date DESC "
                 "LIMIT 80)"
