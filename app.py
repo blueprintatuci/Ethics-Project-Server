@@ -233,12 +233,11 @@ def scrape_articles():
     """
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
-    all_sites = ['treehugger', 'zerowastehome']
     recent_articles = dict()
-    for site in all_sites:
+    for site in Scrapers.all_sites:
         site_query = '%'+site+'%'
         query = ("SELECT * "
-                    "FROM test_articles "
+                    "FROM articles "
                     "WHERE url LIKE %s "
                     "ORDER by publish_date DESC "
                     "LIMIT 1 ")

@@ -2,6 +2,8 @@ import scrapers.treehugger as treehugger
 import scrapers.zerowastehome as zerowastehome
 import datetime
 
+all_sites = ['treehugger', 'zerowastehome']
+
 def run_scrapers(recent_articles):
     '''
     Input: recent_articles is a dictionary of site names whose values are the most recent article put in the table
