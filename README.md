@@ -1,5 +1,7 @@
 # Ethic-Blueprint Backend Server
 A Python/Flask server to interface with our PostGreSQL database hosted on Heroku :)
+[General Backend Documentation](https://docs.google.com/document/d/1BplZcAn_fgPt9aQVchITaTtT2rrt0Mwa7w4oRuVK54w/edit#)
+[Scraper Documentation](https://docs.google.com/document/d/15sDqXgBlSW3cUScGSam7tZL6wnTwM-fWL0KoXvZTh-w/edit)
 ## Getting Started
 - Set up the Heroku CLI on your computer: [Instructions](https://devcenter.heroku.com/categories/command-line)
 ## Accessing the PSQL Database Directly
@@ -21,6 +23,5 @@ A Python/Flask server to interface with our PostGreSQL database hosted on Heroku
 - After you've tested your changes locally, you're ready to update the repo. Type these commands in your terminal, while you're in the working directory for this repo:
   - `git add .` (This adds all files you made changes to. If you only want to add a certain file for some reason, do `git add file-name`)
   - `git commit -m "write what you updated or changed"` (Commit your changes and write a relevant message pertaining to your changes)
-  - `git push origin master` (Updates our GitHub repo)
-  - `git push heroku master` (Deploys your changes to Heroku)
-- <b>SUPER IMPORTANT:</b> The last two commands above are super important. Make sure you do both, because if you only do one, you'll either only update this GitHub repo or deploy to Heroku without adding your code here.
+  - `git push origin master` (Updates our GitHub repo and deploys to Heroku automatically!)
+  - We have it set up so that any updates to the `master` branch on this repo will trigger a deploy on Heroku and update the server.
