@@ -202,7 +202,7 @@ def post_articles():
 
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
-    get_stmt = ("SELECT url, title, author, image_url FROM articles "
+    get_stmt = ("SELECT url, title, site_title, image_url FROM articles "
                 "WHERE id = (%s)")
     values = (article_id,)
     cur.execute(get_stmt, values)
