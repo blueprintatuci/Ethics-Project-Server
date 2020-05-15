@@ -1,3 +1,5 @@
+import datetime
+
 months = {
     'January': 1,
     'February': 2,
@@ -16,6 +18,7 @@ months = {
 def date_convert(string):
     date = string.split()
     mon = months[date[0]]
-    day = date[1].strip(',')
-    year = date[2]
-    return "{}/{}/{}".format(mon, day, year)
+    day = int(date[1].strip(','))
+    year = int(date[2])
+    # return "{}/{}/{}".format(mon, day, year)
+    return datetime.datetime(year,mon,day)

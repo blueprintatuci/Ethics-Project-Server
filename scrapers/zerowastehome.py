@@ -4,9 +4,12 @@ from scrapers.utils import *
 
 ## for zerowastehome.com
 
-def scrape_zerowastehome():
+def scrape_zerowastehome(table_article):
     '''
-    Scrapes content from zerowastehome
+    Input: table_article is a dict of the most recent published article from zerowastehome 
+            that was inserted into the articles table
+    Scrapes content from zerowastehome; if a duplicate article is detected, script will terminate and return output
+    Output: list of dicts representing articles
     '''
     l = []
     
@@ -21,6 +24,7 @@ def scrape_zerowastehome():
 
     for item in blogposts:
         d = { }
+        dup_flag = False
 
         ## url
         url = item.find("a", class_="entire-meta-link")
@@ -43,11 +47,33 @@ def scrape_zerowastehome():
         publish_date = item.find("div", class_="text").find("span").get_text()
         d['publish_date'] = date_convert(publish_date)
 
-        l.append(d)
+        ## site name
+        d['site_title'] = 'zerowastehome'
+
+        #### dup check 
+        if d['publish_date'] == table_article['publish_date'] or d['publish_date'] < table_article['publish_date']:
+            dup_flag = True 
+        dup_flag =  dup_flag and d['url'] == table_article['url']
+        dup_flag =  dup_flag and d['title'] == table_article['title']
+
+        if not dup_flag:
+            l.append(d)
+        else:
+            break
 
     return l
 
 
 if __name__ == "__main__":
-    print(scrape_zerowastehome())
+    test_article = {
+                'url': "",
+                'title':"",
+                'author':"",
+                'image_url':"",
+                'publish_date' : datetime.datetime(1,1,1),
+                'site_title': 'zerowastehome',
+            }
+    zwh = scrape_zerowastehome(test_article)
+    print('Number of new articles: ', len(zwh))
+    print (zwh)
     
