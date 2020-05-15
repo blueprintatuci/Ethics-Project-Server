@@ -22,6 +22,7 @@ if __name__ == "__main__":
                 'author':"",
                 'image_url':"",
                 'publish_date' : datetime.datetime(1,1,1),
+                'site_title': "",
             }
     rec_art = {
         'treehugger': test_article,

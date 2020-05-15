@@ -47,6 +47,9 @@ def scrape_treehugger(table_article):
         publish_date = item.find("div", class_="c-article__byline").find('a', class_="c-article__published").get_text()
         d['publish_date'] = date_convert(publish_date)
 
+        ## site name
+        d['site_title'] = 'treehugger'
+
         #### dup check 
         if d['publish_date'] == table_article['publish_date'] or d['publish_date'] < table_article['publish_date']:
             dup_flag = True 
@@ -68,6 +71,7 @@ if __name__ == "__main__":
                 'author':"",
                 'image_url':"",
                 'publish_date' : datetime.datetime(1,1,1),
+                'site_title' : 'treehugger',
             }
     th = scrape_treehugger(test_article)
     print('Number of new articles: ', len(th))
