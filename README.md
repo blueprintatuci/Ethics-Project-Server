@@ -1,7 +1,7 @@
 # Ethic-Blueprint Backend Server
 A Python/Flask server to interface with our PostGreSQL database hosted on Heroku :)
-[General Backend Documentation](https://docs.google.com/document/d/1BplZcAn_fgPt9aQVchITaTtT2rrt0Mwa7w4oRuVK54w/edit#)
-[Scraper Documentation](https://docs.google.com/document/d/15sDqXgBlSW3cUScGSam7tZL6wnTwM-fWL0KoXvZTh-w/edit)
+- [General Backend Documentation](https://docs.google.com/document/d/1BplZcAn_fgPt9aQVchITaTtT2rrt0Mwa7w4oRuVK54w/edit#)
+- [Scraper Documentation](https://docs.google.com/document/d/15sDqXgBlSW3cUScGSam7tZL6wnTwM-fWL0KoXvZTh-w/edit)
 ## Getting Started
 - Set up the Heroku CLI on your computer: [Instructions](https://devcenter.heroku.com/categories/command-line)
 ## Accessing the PSQL Database Directly
